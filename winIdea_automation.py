@@ -4,15 +4,21 @@ from ws_cfg import WorkspaceConfigurator
 import glob
 import keyboard
 import os
+import time
+import pycanoe # to use it need to do: pip install pycanoe
 
 # Paths for the .xjrf Workspace files to be used and the path for the .exe WinIdea.
 # CHANGE THE PATHS FOR THE OTHER ODIS
 ws_paths = [
-   
+    
 ]
 
 winIdea_exe = ""
 
+
+# CANoe configuration
+canoe_config_file = "canoe_config.cfg"  # Replace with CANoe configuration file
+ecu_node_name = "ECU_Node"  # Replace with the name of the ECU node in CANoe
 
 # workspace opening and setup for the right workspace selection
 def run_workspace(ws_path):
@@ -46,7 +52,7 @@ def search_files(paths, extensions):
 # List of parcodes and datasets for each car/project
 # TODO: need to get a way to update the DS list without needing to do manually (see a possible list of DS and extract ta a file and use it here everytime when running this script)
 parcode_dict = {
-    
+
 }
 
 
@@ -65,6 +71,26 @@ def prompt_user_for_parcode():
     return selected_parcode
 
 
+def prompt_user_for_canoe():
+    # Prompt the user to confirm CANoe configuration
+    user_input = input("Do you want to start CANoe for ECU information? (y/n): ").lower()
+    return user_input == 'y'
+
+
+def configure_canoe():
+    # Configure and start CANoe
+    canoe = pycanoe.CANoe()
+    canoe.open_configuration(canoe_config_file)
+    canoe.start_measurement()
+    return canoe
+
+
+def stop_canoe(canoe):
+    # Stop CANoe
+    canoe.stop_measurement()
+    canoe.close_configuration()
+
+
 def main():
     # Prompt the user to select the right software version
     software_version = input("Enter the software version (e.g., MEB_UNECE, MQB): ")
@@ -76,9 +102,6 @@ def main():
     # Construct search paths based on the software version
     # TODO: for the cal_merge, need to get a input from user to select the wright car parcode. (INSIDE OF THE DS container, take the excel file with all the parcodes)
     search_paths = [
-        # f"C:\\_01_SW\\00_MEB_UNECE\\{software_version}\\Internal\\SW_FBL\\4M\\12CH_BL_High\\Exe",
-        # f"C:\\_01_SW\\00_MEB_UNECE\\{software_version}\\Internal\\SW_OUT\\UNE_12CH\\NVM",
-        # f"C:\\_01_SW\\00_MEB_UNECE\\{software_version}\\Internal\\SW_OUT\\UNE_12CH\\CAL_ML_MERGE",
         # TODO: map all the different paths for the extension files, and insert a input field for user select different channels (4CH, 8CH or 12CH low HIGH),
         #
         # wright SW path:
@@ -129,20 +152,25 @@ def main():
     cmgr = ic.ConnectionMgr()
     cmgr.connectMRU("")
     wsCfg = WorkspaceConfigurator(cmgr)
-    # WORKSPACE_NAME = "PP6_VW_MEB.xjrf"
-    # wsCfg.create_workspace(WORKSPACE_NAME)
     wsCfg.set_emulator_type("iC5000")
     wsCfg.set_USB_comm("iC5000 (SN 12345)")
-    # wsCfg.set_TCP_comm(IP='12.34.56.78', port='1234')
     wsCfg.set_SoC("LS1012A")
-    # wsCfg.add_application("myApplication0")
-    # wsCfg.add_symbol_file("myApplication0", "program.elf", "ELF")
     wsCfg.add_memory_space("memorySpace0", "Core0", "myApplication0")
-    # wsCfg.add_program_file("program.elf", "ELF")
     wsCfg.set_demo_mode(True)
     # Download
     debugCtrl = ic.CDebugFacade(cmgr)
     debugCtrl.download()
+
+    # Start CANoe if the user wants to monitor ECU information
+    if prompt_user_for_canoe():
+        canoe = configure_canoe()
+
+        # Wait for a while (adjust as needed) to allow monitoring during flashing
+        time.sleep(10)
+
+        # Stop CANoe after flashing is complete
+        stop_canoe(canoe)
+
     wsCfg.save_workspace()
     wsCfg.close_workspace()
 
