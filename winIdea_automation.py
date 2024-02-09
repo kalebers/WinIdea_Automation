@@ -5,20 +5,21 @@ import glob
 import keyboard
 import os
 import time
-import pycanoe # to use it need to do: pip install pycanoe
+import py_canoe  # to use it need to do: pip install pycanoe
+
+# TODO: how tl install pycanoe in this machine
 
 # Paths for the .xjrf Workspace files to be used and the path for the .exe WinIdea.
 # CHANGE THE PATHS FOR THE OTHER ODIS
-ws_paths = [
-    
-]
+ws_paths = []
 
 winIdea_exe = ""
 
 
 # CANoe configuration
-canoe_config_file = "canoe_config.cfg"  # Replace with CANoe configuration file
-ecu_node_name = "ECU_Node"  # Replace with the name of the ECU node in CANoe
+canoe_config_file = ""  # Replace with CANoe configuration path file
+ecu_node_name = ""  # Replace with the name of the ECU node in CANoe
+
 
 # workspace opening and setup for the right workspace selection
 def run_workspace(ws_path):
@@ -51,9 +52,7 @@ def search_files(paths, extensions):
 # TODO: show a confirmation of which DS in being selected by the parcode.
 # List of parcodes and datasets for each car/project
 # TODO: need to get a way to update the DS list without needing to do manually (see a possible list of DS and extract ta a file and use it here everytime when running this script)
-parcode_dict = {
-
-}
+parcode_dict = {}
 
 
 # pronpting the suer to select the right parcode
@@ -73,13 +72,15 @@ def prompt_user_for_parcode():
 
 def prompt_user_for_canoe():
     # Prompt the user to confirm CANoe configuration
-    user_input = input("Do you want to start CANoe for ECU information? (y/n): ").lower()
-    return user_input == 'y'
+    user_input = input(
+        "Do you want to start CANoe for ECU information? (y/n): "
+    ).lower()
+    return user_input == "y"
 
 
 def configure_canoe():
     # Configure and start CANoe
-    canoe = pycanoe.CANoe()
+    canoe = py_canoe.CANoe()
     canoe.open_configuration(canoe_config_file)
     canoe.start_measurement()
     return canoe
@@ -93,7 +94,7 @@ def stop_canoe(canoe):
 
 def main():
     # Prompt the user to select the right software version
-    software_version = input("Enter the software version (e.g., MEB_UNECE, MQB): ")
+    software_folder_name = input("Enter the software folder name: ")
     channel_type = input(
         "Enter the channel type(MEB_LOW_4CH, MEB_LOW, MEB_HIGH, UNE_04CH 8CH 12CH, BL_04CH 8CH 12CH_HIGH 12CH_LOW): "
     )
@@ -106,12 +107,12 @@ def main():
         #
         # wright SW path:
         # C:\0_SW\something
-        f"C:\\0_SW\\{car_platform}\\{software_version}\\Internal\\SW_FBL\\4M\\{channel_type}\\Exe",
-        f"C:\\0_SW\\{car_platform}\\{software_version}\\Internal\\SW_FBL\\{channel_type}\\Exe",
-        f"C:\\0_SW\\{car_platform}\\{software_version}\\Internal\\SW_OUT\\{channel_type}\\NVM",
-        f"C:\\0_SW\\{car_platform}\\{software_version}\\Internal\\SW_OUT\\{channel_type}\\CAL_ML_MERGE",
-        f"C:\\0_SW\\{car_platform}\\{software_version}\\Internal\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE"
-        f"C:\\0_SW\\{car_platform}\\{software_version}\\Internal\\SW_OUT\\Data_Set_HEX\\{channel_type}\\NVM"
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_FBL\\4M\\{channel_type}\\Exe",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_FBL\\{channel_type}\\Exe",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\{channel_type}\\NVM",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\{channel_type}\\CAL_ML_MERGE",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE"
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\Data_Set_HEX\\{channel_type}\\NVM"
         "path/to/your/files2",
         # Add more paths as needed
     ]
