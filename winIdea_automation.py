@@ -5,7 +5,7 @@ import glob
 import keyboard
 import os
 import time
-import py_canoe  # to use it need to do: pip install pycanoe
+import py_canoe  # to use it need to do: pip install py_canoe --upgrade
 
 # TODO: how tl install pycanoe in this machine
 
