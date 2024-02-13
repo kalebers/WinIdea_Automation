@@ -13,12 +13,12 @@ import py_canoe  # to use it need to do: pip install py_canoe --upgrade
 # CHANGE THE PATHS FOR THE OTHER ODIS
 ws_paths = []
 
-winIdea_exe = ""
+winIdea_exe = ""  # winIdea .exe file path
 
 
 # CANoe configuration
 canoe_config_file = ""  # Replace with CANoe configuration path file
-ecu_node_name = ""  # Replace with the name of the ECU node in CANoe
+ecu_node_name = "ECU_Node"  # Replace with the name of the ECU node in CANoe
 
 
 # workspace opening and setup for the right workspace selection
@@ -49,7 +49,7 @@ def search_files(paths, extensions):
     return result_files
 
 
-# TODO: show a confirmation of which DS in being selected by the parcode.
+# TODO: show a confirmation of which DS in being selected by the parcode and search the same DS inthe folders (or the hex file correspondent to the DS)
 # List of parcodes and datasets for each car/project
 # TODO: need to get a way to update the DS list without needing to do manually (see a possible list of DS and extract ta a file and use it here everytime when running this script)
 parcode_dict = {}
@@ -94,25 +94,37 @@ def stop_canoe(canoe):
 
 def main():
     # Prompt the user to select the right software version
-    software_folder_name = input("Enter the software folder name: ")
+    software_folder_name = input("Enter the software folder name:")
     channel_type = input(
-        "Enter the channel type(MEB_LOW_4CH, MEB_LOW, MEB_HIGH, UNE_04CH 8CH 12CH, BL_04CH 8CH 12CH_HIGH 12CH_LOW): "
+        "Enter the channel type(MEB_LOW_4CH, MEB_LOW, MEB_HIGH, UNE_04CH 8CH 12CH, BL_04CH 8CH 12CH_HIGH 12CH_LOW):"
     )
-    car_platform = input("Enter car platform (e.g., MEB, MQB): ")
+    car_platform = input("Enter car platform (e.g., MEB, MQB):")
 
     # Construct search paths based on the software version
     # TODO: for the cal_merge, need to get a input from user to select the wright car parcode. (INSIDE OF THE DS container, take the excel file with all the parcodes)
     search_paths = [
-        # TODO: map all the different paths for the extension files, and insert a input field for user select different channels (4CH, 8CH or 12CH low HIGH),
-        #
         # wright SW path:
         # C:\0_SW\something
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_FBL\\4M\\{channel_type}\\Exe",
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_FBL\\{channel_type}\\Exe",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_FBL\\{channel_type}\\Exec",
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\{channel_type}\\NVM",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\{channel_type}\\CAL",
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\{channel_type}\\CAL_ML_MERGE",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\{channel_type}\\BIN",
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE"
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_OUT\\Data_Set_HEX\\{channel_type}\\NVM"
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_FBL\\4M\\{channel_type}\\Exe",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_FBL\\{channel_type}\\Exe",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_FBL\\{channel_type}\\Exec",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\{channel_type}\\NVM",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\{channel_type}\\CAL",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\{channel_type}\\CAL_ML_MERGE",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\{channel_type}\\BIN",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE"
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\NVM",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL",
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE"
         "path/to/your/files2",
         # Add more paths as needed
     ]
@@ -154,7 +166,7 @@ def main():
     cmgr.connectMRU("")
     wsCfg = WorkspaceConfigurator(cmgr)
     wsCfg.set_emulator_type("iC5000")
-    wsCfg.set_USB_comm("iC5000 (SN 12345)")
+    wsCfg.set_USB_comm("iC5000 (SN 61174)")
     wsCfg.set_SoC("LS1012A")
     wsCfg.add_memory_space("memorySpace0", "Core0", "myApplication0")
     wsCfg.set_demo_mode(True)
