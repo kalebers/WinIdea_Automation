@@ -7,13 +7,11 @@ import os
 import time
 import py_canoe  # to use it need to do: pip install py_canoe --upgrade
 
-# TODO: how tl install pycanoe in this machine
-
 # Paths for the .xjrf Workspace files to be used and the path for the .exe WinIdea.
 # CHANGE THE PATHS FOR THE OTHER ODIS
 ws_paths = []
 
-winIdea_exe = ""  # winIdea .exe file path
+winIdea_exe = ""  # path for the .exe winIdea file
 
 
 # CANoe configuration
@@ -55,7 +53,7 @@ def search_files(paths, extensions):
 parcode_dict = {}
 
 
-# pronpting the suer to select the right parcode
+# prompting the user to select the right parcode
 def prompt_user_for_parcode():
     print("Select a parcode:")
     for i, parcode in enumerate(parcode_dict, start=1):
@@ -103,6 +101,8 @@ def main():
     # Construct search paths based on the software version
     # TODO: for the cal_merge, need to get a input from user to select the wright car parcode. (INSIDE OF THE DS container, take the excel file with all the parcodes)
     search_paths = [
+        # TODO: map all the different paths for the extension files, and insert a input field for user select different channels (4CH, 8CH or 12CH low HIGH),
+        # TODO: make sure that all folders for channel_type are the same name
         # wright SW path:
         # C:\0_SW\something
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\Internal\\SW_FBL\\4M\\{channel_type}\\Exe",
@@ -124,9 +124,7 @@ def main():
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE"
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\NVM",
         f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL",
-        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE"
-        "path/to/your/files2",
-        # Add more paths as needed
+        f"C:\\0_SW\\{car_platform}\\{software_folder_name}\\INTERNAL\\SW_OUT\\Data_Set_HEX\\{channel_type}\\CAL_ML_MERGE",
     ]
 
     # Define the list of file extensions to search for
