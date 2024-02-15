@@ -50,7 +50,7 @@ def search_files(paths, extensions):
 # TODO: show a confirmation of which DS in being selected by the parcode and search the same DS inthe folders (or the hex file correspondent to the DS)
 # List of parcodes and datasets for each car/project
 # TODO: need to get a way to update the DS list without needing to do manually (see a possible list of DS and extract ta a file and use it here everytime when running this script)
-# TODO: the list of DS inside the DS_Container folder from MEB and MQB are different, nee to merge them here
+# TODO: the list of DS inside the DS_Container folder from MEB and MQB are different. Try to get the .xlsx file correspondent to the CH type and read it here (ZipConainerList_MQBorUNE_XXCH_XX.xlsx)
 parcode_dict = {}
 
 
