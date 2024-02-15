@@ -11,8 +11,8 @@ import py_canoe  # to use it need to do: pip install py_canoe --upgrade
 # CHANGE THE PATHS FOR THE OTHER ODIS
 ws_paths = []
 
-winIdea_exe = ""  # path for the .exe winIdea file
-
+# winIdea .exe file path
+winIdea_exe = ""
 
 # CANoe configuration
 canoe_config_file = ""  # Replace with CANoe configuration path file
@@ -50,6 +50,7 @@ def search_files(paths, extensions):
 # TODO: show a confirmation of which DS in being selected by the parcode and search the same DS inthe folders (or the hex file correspondent to the DS)
 # List of parcodes and datasets for each car/project
 # TODO: need to get a way to update the DS list without needing to do manually (see a possible list of DS and extract ta a file and use it here everytime when running this script)
+# TODO: the list of DS inside the DS_Container folder from MEB and MQB are different, nee to merge them here
 parcode_dict = {}
 
 
@@ -160,6 +161,8 @@ def main():
     wsCfg.add_symbol_file("myApplication0", elf_file, "ELF")
     wsCfg.add_program_file(elf_file, "ELF")
 
+    # TODO: add the functions for ECU reset (if the ECU is new), ECU Mass erase and files for donwload
+    # TODO: check if the download function is working
     cmgr = ic.ConnectionMgr()
     cmgr.connectMRU("")
     wsCfg = WorkspaceConfigurator(cmgr)
