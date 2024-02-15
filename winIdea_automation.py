@@ -11,8 +11,8 @@ import py_canoe  # to use it need to do: pip install py_canoe --upgrade
 # CHANGE THE PATHS FOR THE OTHER ODIS
 ws_paths = []
 
-# winIdea .exe file path
 winIdea_exe = ""
+
 
 # CANoe configuration
 canoe_config_file = ""  # Replace with CANoe configuration path file
@@ -50,7 +50,8 @@ def search_files(paths, extensions):
 # TODO: show a confirmation of which DS in being selected by the parcode and search the same DS inthe folders (or the hex file correspondent to the DS)
 # List of parcodes and datasets for each car/project
 # TODO: need to get a way to update the DS list without needing to do manually (see a possible list of DS and extract ta a file and use it here everytime when running this script)
-# TODO: the list of DS inside the DS_Container folder from MEB and MQB are different. Try to get the .xlsx file correspondent to the CH type and read it here (ZipConainerList_MQBorUNE_XXCH_XX.xlsx)
+# TODO: the list of DS inside the DS_Container folder from MEB and MQB are different. Try to get the .xlsx file correspondent to the CH type and read it here (ZipContainerList_BLorUNE_XXCH_XXXX.xlsx)
+parcode_excel_test = ()  # TODO: ideia to start looking for the excel file to read it and extract the exact parcode and DS value to be used
 parcode_dict = {}
 
 
