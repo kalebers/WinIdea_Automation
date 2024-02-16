@@ -6,12 +6,12 @@ import keyboard
 import os
 import time
 import py_canoe  # to use it need to do: pip install py_canoe --upgrade
+import pandas as pd
 
 # Paths for the .xjrf Workspace files to be used and the path for the .exe WinIdea.
 # CHANGE THE PATHS FOR THE OTHER ODIS
 ws_paths = []
 
-# winIdea .exe file
 winIdea_exe = ""
 
 
@@ -52,8 +52,17 @@ def search_files(paths, extensions):
 # List of parcodes and datasets for each car/project
 # TODO: need to get a way to update the DS list without needing to do manually (see a possible list of DS and extract ta a file and use it here everytime when running this script)
 # TODO: the list of DS inside the DS_Container folder from MEB and MQB are different. Try to get the .xlsx file correspondent to the CH type and read it here (ZipContainerList_BLorUNE_XXCH_XXXX.xlsx)
-parcode_excel_test = ()  # TODO: ideia to start looking for the excel file to read it and extract the exact parcode and DS value to be used
+# TODO: idea to start looking for the excel file to read it and extract the exact parcode and DS value to be used
 parcode_dict = {}
+
+
+def read_parcode_excel(file_path):
+    try:
+        df = pd.read_excel(file_path)
+        parcode_dict = dict(zip(df["Parcode"], df["Dataset"]))
+        return parcode_dict
+    except Exception as e:
+        print(f"Error reading Excel file: {e}")
 
 
 # prompting the user to select the right parcode
@@ -152,6 +161,16 @@ def main():
     elf_file = elf_files[0]
     hex_file = hex_files[0]
 
+    parcode_excel_path1 = "insert excel path"
+    parcode_excel_path2 = "insert excel path"
+
+    parcode_dict1 = read_parcode_excel(parcode_excel_path1)
+    parcode_dict2 = read_parcode_excel(parcode_excel_path2)
+
+    if not parcode_dict1 or not parcode_dict2:
+        print("invalid parcode Excel. Exiting")
+        return
+
     selected_parcode = prompt_user_for_parcode()
     if selected_parcode:
         print(f"Selected Parcode: {selected_parcode}")
@@ -170,7 +189,7 @@ def main():
     wsCfg.add_symbol_file("myApplication0", elf_file, "ELF")
     wsCfg.add_program_file(elf_file, "ELF")
 
-    # TODO: add the function files for donwload
+    # TODO: add the function files for download
     # TODO: check if the download function is working
     # calling thereset and mass_erase functions
     ecu_reset()
