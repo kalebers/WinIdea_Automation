@@ -11,6 +11,7 @@ import py_canoe  # to use it need to do: pip install py_canoe --upgrade
 # CHANGE THE PATHS FOR THE OTHER ODIS
 ws_paths = []
 
+# winIdea .exe file
 winIdea_exe = ""
 
 
@@ -92,18 +93,25 @@ def stop_canoe(canoe):
     canoe.close_configuration()
 
 
+def ecu_reset():
+    debugCtrl.resetECU()
+
+
+def ecu_mass_erase():
+    debugCtrl.eraseECU()
+
+
 def main():
     # Prompt the user to select the right software version
     software_folder_name = input("Enter the software folder name:")
     channel_type = input(
-        "Enter the channel type(MEB_LOW_4CH, MEB_LOW, MEB_HIGH, UNE_04CH 8CH 12CH, BL_04CH 8CH 12CH_HIGH 12CH_LOW):"
+        "Enter the channel type(MEB_LOW_4CH, MEB_LOW, MEB_HIGH, UNE_04CH or 8CH or 12CH, BL_04CH or 8CH or 12CH_HIGH or 12CH_LOW 12CH or 8CH or 4CH_BL_High):"
     )
     car_platform = input("Enter car platform (e.g., MEB, MQB):")
 
     # Construct search paths based on the software version
     # TODO: for the cal_merge, need to get a input from user to select the wright car parcode. (INSIDE OF THE DS container, take the excel file with all the parcodes)
     search_paths = [
-        # TODO: map all the different paths for the extension files, and insert a input field for user select different channels (4CH, 8CH or 12CH low HIGH),
         # TODO: make sure that all folders for channel_type are the same name
         # wright SW path:
         # C:\0_SW\something
@@ -162,8 +170,12 @@ def main():
     wsCfg.add_symbol_file("myApplication0", elf_file, "ELF")
     wsCfg.add_program_file(elf_file, "ELF")
 
-    # TODO: add the functions for ECU reset (if the ECU is new), ECU Mass erase and files for donwload
+    # TODO: add the function files for donwload
     # TODO: check if the download function is working
+    # calling thereset and mass_erase functions
+    ecu_reset()
+    ecu_mass_erase()
+
     cmgr = ic.ConnectionMgr()
     cmgr.connectMRU("")
     wsCfg = WorkspaceConfigurator(cmgr)
