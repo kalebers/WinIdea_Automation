@@ -59,7 +59,7 @@ parcode_dict = {}
 def read_parcode_excel(file_path):
     try:
         df = pd.read_excel(file_path)
-        parcode_dict = dict(zip(df["Parcode"], df["Dataset"]))
+        parcode_dict = dict(zip(df["Variant Name"], df["ZIP Container Name"]))
         return parcode_dict
     except Exception as e:
         print(f"Error reading Excel file: {e}")
@@ -161,7 +161,8 @@ def main():
     elf_file = elf_files[0]
     hex_file = hex_files[0]
 
-    parcode_excel_path1 = "insert excel path"
+    # TODO: get all the different paths
+    parcode_excel_path1 = "C:\\0_SW\\{car_platform}\\{software_folder_name}\\EXTERNAL\\{channel_type}\\DS_CONTAINER\\ZipContainer_UNE_12CH.xlsx"
     parcode_excel_path2 = "insert excel path"
 
     parcode_dict1 = read_parcode_excel(parcode_excel_path1)
