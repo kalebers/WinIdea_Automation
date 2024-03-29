@@ -4,6 +4,7 @@ import os
 import glob
 import pandas as pd
 import py_canoe
+from typing import Dict, Optional
 
 # Paths for the .xjrf Workspace files to be used and the path for the .exe WinIdea.
 # CHANGE THE PATHS FOR THE OTHER ODIS
@@ -12,11 +13,11 @@ winIdea_exe = ""
 canoe_config_file = ""  # Replace with CANoe configuration path file
 ecu_node_name = "ECU_Node"  # Replace with the name of the ECU node in CANoe
 
-parcode_dict = {}
+parcode_dict = {}  # type: Dict[str, str]
 
 
-def search_files(paths, extensions):
-    result_files = []
+def search_files(paths: list, extensions: list) -> list:
+    result_files = []  # type: list
     for path in paths:
         for extension in extensions:
             files = glob.glob(os.path.join(path, f"*.{extension}"), recursive=True)
@@ -24,7 +25,7 @@ def search_files(paths, extensions):
     return result_files
 
 
-def read_parcode_excel(file_path):
+def read_parcode_excel(file_path: str) -> Optional[Dict[str, str]]:
     try:
         df = pd.read_excel(file_path)
         parcode_dict = dict(zip(df["Variant Name"], df["ZIP Container Name"]))
@@ -35,7 +36,7 @@ def read_parcode_excel(file_path):
 
 
 @click.group()
-def main():
+def main() -> None:
     pass
 
 
@@ -43,7 +44,7 @@ def main():
 @click.option("--software-folder", prompt="Enter the software folder name")
 @click.option("--channel-type", prompt="Enter the channel type")
 @click.option("--car-platform", prompt="Enter car platform")
-def configure(software_folder, channel_type, car_platform):
+def configure(software_folder: str, channel_type: str, car_platform: str) -> None:
     # Construct search paths based on the software version
     search_paths = [
         # Complete the search paths based on your requirements
@@ -86,7 +87,7 @@ def configure(software_folder, channel_type, car_platform):
 
 
 @main.command()
-def run_workspace():
+def run_workspace() -> None:
     selected_workspace = prompt_user_for_workspace()
     if selected_workspace:
         run_workspace(selected_workspace)
@@ -95,13 +96,13 @@ def run_workspace():
 
 
 @main.command()
-def prompt_user_for_canoe():
+def prompt_user_for_canoe() -> bool:
     # Prompt the user to confirm CANoe configuration
     user_input = input("Do you want to start CANoe for ECU information? (y/n): ").lower()
     return user_input == "y"
 
 
-def prompt_user_for_parcode(parcode_dict):
+def prompt_user_for_parcode(parcode_dict: Dict[str, str]) -> Optional[str]:
     print("Select a parcode:")
     for i, parcode in enumerate(parcode_dict, start=1):
         print(f"{i}. {parcode}")
@@ -115,7 +116,7 @@ def prompt_user_for_parcode(parcode_dict):
     return selected_parcode
 
 
-def prompt_user_for_workspace():
+def prompt_user_for_workspace() -> Optional[str]:
     print("Select a workspace:")
     for i, ws_path in enumerate(ws_paths, start=1):
         print(f"{i}. {ws_path}")
