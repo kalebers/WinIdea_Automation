@@ -17,6 +17,16 @@ parcode_dict = {}  # type: Dict[str, str]
 
 
 def search_files(paths: list, extensions: list) -> list:
+    """
+    Search for files with given extensions in specified paths.
+    
+    Args:
+        paths (list): List of paths to search.
+        extensions (list): List of file extensions to search for.
+        
+    Returns:
+        list: List of file paths found.
+    """
     result_files = []  # type: list
     for path in paths:
         for extension in extensions:
@@ -26,6 +36,16 @@ def search_files(paths: list, extensions: list) -> list:
 
 
 def read_parcode_excel(file_path: str) -> Optional[Dict[str, str]]:
+    """
+    Read parcode information from an Excel file.
+    
+    Args:
+        file_path (str): Path to the Excel file.
+        
+    Returns:
+        dict: Dictionary mapping variant names to ZIP container names.
+        None: If an error occurs during file reading.
+    """
     try:
         df = pd.read_excel(file_path)
         parcode_dict = dict(zip(df["Variant Name"], df["ZIP Container Name"]))
@@ -45,6 +65,14 @@ def main() -> None:
 @click.option("--channel-type", prompt="Enter the channel type")
 @click.option("--car-platform", prompt="Enter car platform")
 def configure(software_folder: str, channel_type: str, car_platform: str) -> None:
+    """
+    Configure the software environment.
+    
+    Args:
+        software_folder (str): Name of the software folder.
+        channel_type (str): Type of communication channel.
+        car_platform (str): Car platform identifier.
+    """
     # Construct search paths based on the software version
     search_paths = [
         # Complete the search paths based on your requirements
@@ -88,6 +116,9 @@ def configure(software_folder: str, channel_type: str, car_platform: str) -> Non
 
 @main.command()
 def run_workspace() -> None:
+    """
+    Run the workspace.
+    """
     selected_workspace = prompt_user_for_workspace()
     if selected_workspace:
         run_workspace(selected_workspace)
@@ -97,12 +128,28 @@ def run_workspace() -> None:
 
 @main.command()
 def prompt_user_for_canoe() -> bool:
+    """
+    Prompt user to start CANoe for ECU information.
+    
+    Returns:
+        bool: True if user wants to start CANoe, False otherwise.
+    """
     # Prompt the user to confirm CANoe configuration
     user_input = input("Do you want to start CANoe for ECU information? (y/n): ").lower()
     return user_input == "y"
 
 
 def prompt_user_for_parcode(parcode_dict: Dict[str, str]) -> Optional[str]:
+    """
+    Prompt the user to select a parcode.
+    
+    Args:
+        parcode_dict (Dict[str, str]): Dictionary mapping variant names to ZIP container names.
+        
+    Returns:
+        str: Selected parcode.
+        None: If invalid input or no parcode selected.
+    """
     print("Select a parcode:")
     for i, parcode in enumerate(parcode_dict, start=1):
         print(f"{i}. {parcode}")
@@ -117,6 +164,13 @@ def prompt_user_for_parcode(parcode_dict: Dict[str, str]) -> Optional[str]:
 
 
 def prompt_user_for_workspace() -> Optional[str]:
+    """
+    Prompt the user to select a workspace.
+    
+    Returns:
+        str: Selected workspace path.
+        None: If invalid input or no workspace selected.
+    """
     print("Select a workspace:")
     for i, ws_path in enumerate(ws_paths, start=1):
         print(f"{i}. {ws_path}")
